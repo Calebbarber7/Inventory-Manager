@@ -1,0 +1,17 @@
+{
+  "name":"Inventory Manager",
+  "short_name":"Inventory",
+  "description":"Offline-first resale inventory, cost, photo, and profit tracker.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "orientation":"any",
+  "background_color":"#f3f6f5",
+  "theme_color":"#195c48",
+  "categories":["business","productivity","finance"],
+  "icons":[
+    {"src":"icons/icon-180.png","sizes":"180x180","type":"image/png","purpose":"any"},
+    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
