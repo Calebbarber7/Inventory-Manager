@@ -2,135 +2,87 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#195c48">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Inventory">
 <title>Inventory Manager</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#246b54">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Inventory">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
-
-<style>
-:root{--bg:#f4f6f8;--card:#fff;--ink:#17212b;--muted:#65717d;--line:#dce2e7;--accent:#246b54;--accent2:#e8f3ee;--danger:#b42318;--shadow:0 8px 24px rgba(23,33,43,.08)}
-*{box-sizing:border-box} body{margin:0;padding-bottom:env(safe-area-inset-bottom);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(120deg,#173f35,#246b54);color:#fff;padding:calc(28px + env(safe-area-inset-top)) 24px 28px} header .wrap{max-width:1200px;margin:auto} h1{margin:0 0 6px;font-size:30px} header p{margin:0;color:#d7ebe4}
-main{max-width:1200px;margin:24px auto;padding:0 20px 40px}.toolbar,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
-.toolbar{display:flex;flex-wrap:wrap;gap:10px;padding:14px;margin-bottom:18px;align-items:center}.toolbar .spacer{flex:1}.search{min-width:230px;flex:1;max-width:380px}
-button,input,select{font:inherit}button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 12px;cursor:pointer}button:hover{background:#f7f9fa}.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.primary:hover{background:#1d5846}.danger{color:var(--danger)}
-input[type=search],input[type=text],input[type=number],select{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 9px;background:#fff}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.stat{padding:18px}.stat small{display:block;color:var(--muted);margin-bottom:5px}.stat strong{font-size:25px}.positive{color:var(--accent)}.negative{color:var(--danger)}
-.table-card{overflow:hidden}.table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:800px}th{position:sticky;top:0;background:#f8fafb;text-align:left;color:#47525d;font-weight:650;padding:11px 10px;border-bottom:1px solid var(--line)}td{padding:8px 10px;border-bottom:1px solid #edf0f2}td input,td select{min-width:90px}.name{min-width:260px}.money{text-align:right}.actions{width:70px;text-align:center}.empty{text-align:center;color:var(--muted);padding:34px}
-.footer-note{color:var(--muted);font-size:13px;margin-top:12px}.pill{display:inline-block;background:var(--accent2);color:var(--accent);padding:3px 8px;border-radius:999px;font-size:12px}
-@media(max-width:760px){header{padding:calc(22px + env(safe-area-inset-top)) 16px 22px}.stats{grid-template-columns:repeat(2,1fr)}header{padding:22px 16px}h1{font-size:25px}}
-dialog{border:0;border-radius:16px;padding:0;box-shadow:0 24px 70px rgba(0,0,0,.25);width:min(520px,calc(100% - 28px))}dialog::backdrop{background:rgba(15,23,32,.55)}.modal-head{padding:20px 22px 12px}.modal-head h2{margin:0 0 5px;font-size:22px}.modal-head p{margin:0;color:var(--muted)}.modal-body{padding:10px 22px 20px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field label{display:block;font-weight:650;margin-bottom:6px}.field small{display:block;color:var(--muted);margin-top:5px}.calc-result{margin-top:16px;padding:14px;border-radius:12px;background:var(--accent2);display:grid;grid-template-columns:1fr 1fr;gap:12px}.calc-result small{display:block;color:var(--muted)}.calc-result strong{font-size:22px;color:var(--accent)}.modal-actions{display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;border-top:1px solid var(--line)}.bulk-btn{white-space:nowrap;font-size:13px}.batch-note{margin-top:12px;color:var(--muted);font-size:13px}@media(max-width:560px){.form-grid,.calc-result{grid-template-columns:1fr}}
-@media print{header,.toolbar,.actions,.footer-note,.bulk-action{display:none!important}body{background:#fff}.card{box-shadow:none}.stats{grid-template-columns:repeat(4,1fr)}main{max-width:none;margin:0;padding:0}input,select{border:0;padding:0;background:transparent;appearance:none}.table-scroll{overflow:visible}table{min-width:0}}
-</style>
+<link rel="stylesheet" href="styles.css">
+<script defer src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script defer src="app.js"></script>
 </head>
 <body>
-<header><div class="wrap"><h1>Inventory Manager</h1><p>Track item costs, sales, profit, and margin in one place.</p></div></header>
-<main>
-<div id="iosInstall" style="display:none;background:#fff8dc;border:1px solid #eadca5;border-radius:12px;padding:12px 14px;margin-bottom:18px">
-  <strong>Install on iPhone:</strong> In Safari, tap Share, choose <b>Add to Home Screen</b>, keep <b>Open as Web App</b> enabled, then tap Add.
-</div>
-
-<section class="toolbar">
-  <button class="primary" id="addBtn">+ Add item</button>
-  <input class="search" id="search" type="search" placeholder="Search item name or size…">
-  <span class="pill" id="countPill"></span><span class="spacer"></span>
-  <button id="csvBtn">Export CSV</button><button id="jsonBtn">Backup JSON</button><button id="importBtn">Import JSON</button><button id="printBtn">Print</button>
-  <input id="fileInput" type="file" accept="application/json" hidden>
-</section>
-<section class="stats">
-  <div class="card stat"><small>Total Cost</small><strong id="totalCost">$0.00</strong></div>
-  <div class="card stat"><small>Total Sold</small><strong id="totalSold">$0.00</strong></div>
-  <div class="card stat"><small>Profit</small><strong id="profit">$0.00</strong></div>
-  <div class="card stat"><small>Profit Margin</small><strong id="margin">0.00%</strong></div>
-</section>
-<section class="card table-card"><div class="table-scroll"><table>
-<thead><tr><th>Item Name</th><th>Size</th><th>Weight (oz)</th><th class="money">Cost</th><th class="money">Sold</th><th class="money">Profit</th><th class="money">Margin</th><th class="bulk-action">Bulk Cost</th><th class="actions">Remove</th></tr></thead>
-<tbody id="tbody"></tbody></table></div></section>
-<p class="footer-note">Changes save automatically in this browser. Use <b>Bulk Cost</b> on any row to calculate an individual item's cost from a bulk purchase. Use <b>Backup JSON</b> to transfer or preserve the data.</p>
-</main>
-<dialog id="bulkDialog">
-  <div class="modal-head"><h2>Bulk Purchase Cost Calculator</h2><p id="bulkItemLabel">Calculate an individual item's cost.</p></div>
-  <div class="modal-body">
-    <div class="form-grid">
-      <div class="field"><label for="bulkWeight">Total bulk weight (lb)</label><input id="bulkWeight" type="number" min="0" step="0.01" placeholder="Example: 15"><small>Total pounds purchased.</small></div>
-      <div class="field"><label for="bulkCost">Total bulk cost ($)</label><input id="bulkCost" type="number" min="0" step="0.01" placeholder="Example: 37.50"><small>Total amount paid for the bulk lot.</small></div>
-      <div class="field"><label for="itemWeight">Individual item weight (oz)</label><input id="itemWeight" type="number" min="0" step="0.1" placeholder="Example: 16"><small>16 ounces equals 1 pound.</small></div>
-    </div>
-    <div class="calc-result"><div><small>Bulk price per pound</small><strong id="pricePerLb">$0.00</strong></div><div><small>Calculated item cost</small><strong id="calculatedItemCost">$0.00</strong></div></div>
-    <div class="batch-note">The last bulk weight and total cost remain available for the next item, which is useful when several items came from the same purchase.</div>
+<header class="app-header">
+  <div class="header-inner">
+    <div><p class="eyebrow">Resale Inventory</p><h1>Inventory Manager</h1><p class="subtitle">Track purchases, photos, sales, and profit from any device.</p></div>
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode">◐</button>
   </div>
-  <div class="modal-actions"><button id="cancelBulkBtn">Cancel</button><button class="primary" id="applyBulkBtn">Apply Cost to Item</button></div>
+</header>
+<main>
+  <section id="installHint" class="notice hidden"><strong>Install on iPhone:</strong> Open in Safari, tap Share, then Add to Home Screen.</section>
+
+  <section class="dashboard" aria-label="Inventory dashboard">
+    <article class="metric"><span>Items</span><strong id="metricItems">0</strong><small id="metricUnsold">0 unsold</small></article>
+    <article class="metric"><span>Total Cost</span><strong id="metricCost">$0.00</strong><small>Amount invested</small></article>
+    <article class="metric"><span>Total Sold</span><strong id="metricSold">$0.00</strong><small>Recorded revenue</small></article>
+    <article class="metric"><span>Profit</span><strong id="metricProfit">$0.00</strong><small id="metricMargin">0.00% margin</small></article>
+  </section>
+
+  <section class="panel controls">
+    <div class="primary-actions"><button id="addBtn" class="primary">＋ Add Item</button><button id="bulkBatchBtn">⚖ Bulk Purchase</button></div>
+    <div class="search-row">
+      <input id="search" type="search" placeholder="Search name, size, category, or location">
+      <select id="statusFilter" aria-label="Filter status"><option value="all">All status</option><option value="unsold">Unsold</option><option value="sold">Sold</option></select>
+      <select id="categoryFilter" aria-label="Filter category"><option value="all">All categories</option></select>
+      <select id="sortBy" aria-label="Sort inventory"><option value="newest">Newest first</option><option value="name">Name A–Z</option><option value="costHigh">Highest cost</option><option value="profitHigh">Highest profit</option></select>
+    </div>
+    <div class="tool-row">
+      <button id="importBtn">Import</button><button id="exportBtn">Export</button><button id="backupBtn">Backups</button><button id="shareBackupBtn">Share Backup</button><button id="printBtn">Print</button>
+    </div>
+    <input id="importFile" type="file" accept=".csv,.xlsx,.xls,.json,text/csv,application/json" hidden>
+  </section>
+
+  <section class="panel inventory-panel">
+    <div class="panel-heading"><div><h2>Inventory</h2><p id="resultCount">0 items</p></div></div>
+    <div id="desktopTable" class="table-wrap"><table><thead><tr><th>Photo</th><th>Item</th><th>Details</th><th>Cost</th><th>Sold</th><th>Profit</th><th>Actions</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+    <div id="mobileCards" class="mobile-cards"></div>
+    <div id="emptyState" class="empty hidden"><div>📦</div><h3>No inventory found</h3><p>Add an item or change the current filters.</p></div>
+  </section>
+  <p class="privacy-note">Your inventory and photos stay on this device. Automatic local snapshots are retained for recovery. Export or share backups regularly for off-device protection.</p>
+</main>
+
+<nav class="mobile-nav"><button id="mobileAdd">＋<span>Add</span></button><button id="mobileSearch">⌕<span>Search</span></button><button id="mobileBackup">⇩<span>Backup</span></button><button id="mobileDashboard">▦<span>Dashboard</span></button></nav>
+
+<dialog id="itemDialog">
+<form method="dialog" id="itemForm" class="dialog-card">
+  <header><div><p class="eyebrow">Inventory Item</p><h2 id="itemDialogTitle">Add Item</h2></div><button value="cancel" class="close-btn" aria-label="Close">×</button></header>
+  <div class="dialog-body">
+    <input id="editId" type="hidden">
+    <div class="photo-editor"><button type="button" id="photoButton" class="photo-preview"><span id="photoPlaceholder">＋ Photo</span><img id="photoPreview" alt="Item preview" class="hidden"></button><div><strong>Add a photo</strong><p>Take a picture or choose one from Photos.</p><button type="button" id="removePhotoBtn" class="text-btn hidden">Remove photo</button></div><input id="photoInput" type="file" accept="image/*" capture="environment" hidden></div>
+    <div class="form-grid">
+      <label class="full">Item name<input id="fName" required maxlength="120" autocomplete="off"></label>
+      <label>Size<input id="fSize" maxlength="30"></label>
+      <label>Category<input id="fCategory" list="categoryOptions" maxlength="50"><datalist id="categoryOptions"><option>Shirts</option><option>Pants</option><option>Dresses</option><option>Sweaters</option><option>Jackets</option><option>Shoes</option><option>Accessories</option></datalist></label>
+      <label>Weight (oz)<input id="fWeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+      <label>Cost ($)<span class="label-action"><button type="button" id="itemBulkBtn">Calculate</button></span><input id="fCost" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      <label>Sold ($)<input id="fSold" type="number" min="0" step="0.01" inputmode="decimal"></label>
+      <label>Purchase date<input id="fDate" type="date"></label>
+      <label>Purchased from<input id="fSource" maxlength="80"></label>
+      <label>Storage location<input id="fLocation" maxlength="80"></label>
+      <label class="full">Notes<textarea id="fNotes" rows="3" maxlength="500"></textarea></label>
+    </div>
+  </div>
+  <footer><button value="cancel">Cancel</button><button type="submit" id="saveItemBtn" class="primary" value="default">Save Item</button></footer>
+</form>
 </dialog>
-<script>
-const ORIGINAL=[{"name": "AE Burnt Orange Crop Top", "size": "XS", "weight": 2.4, "cost": 0.43, "sold": ""}, {"name": "AE Green Floral Tank Top", "size": "XS", "weight": 3.1, "cost": 0.56, "sold": ""}, {"name": "AE Blue Cropped Sweatshirt", "size": "S", "weight": 11.5, "cost": 2.7, "sold": ""}, {"name": "AE Peach Cropped Hoodie", "size": "XS", "weight": 13.6, "cost": 2.5, "sold": ""}, {"name": "UO Long Sleeve Front Tie", "size": "M", "weight": 5.2, "cost": 0.93, "sold": ""}, {"name": "Old Navy Green Tank Top", "size": "M", "weight": 3.7, "cost": 0.67, "sold": ""}, {"name": "AE Green Yellow Holter Top", "size": "M", "weight": 3.7, "cost": 0.67, "sold": 8}, {"name": "Simply Southern Duck Tee", "size": "S", "weight": 4.8, "cost": 0.86, "sold": 4.3}, {"name": "Madi & Moon White Crochet Top", "size": "S", "weight": 5, "cost": 0.9, "sold": 8.5}, {"name": "H&M Navy(Black) Stripped Sweater", "size": "XL", "weight": 17.3, "cost": 3.11, "sold": ""}, {"name": "Aerie Black Crop Top", "size": "M", "weight": 3.8, "cost": 0.68, "sold": ""}];
-const KEY='inventory-manager-v1';
-let items=load();
-const $=s=>document.querySelector(s), money=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return Array.isArray(x)?x:structuredClone(ORIGINAL)}catch{return structuredClone(ORIGINAL)}}
-function save(){localStorage.setItem(KEY,JSON.stringify(items))}
-function num(v){const n=parseFloat(v);return Number.isFinite(n)?n:0}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){const q=$('#search').value.trim().toLowerCase();const visible=items.map((x,i)=>({...x,_i:i})).filter(x=>!q||String(x.name).toLowerCase().includes(q)||String(x.size).toLowerCase().includes(q));
- $('#tbody').innerHTML=visible.length?visible.map(x=>{const p=num(x.sold)-num(x.cost),m=num(x.sold)?p/num(x.sold):0;return `<tr data-i="${x._i}"><td><input class="name" data-k="name" type="text" value="${esc(x.name)}"></td><td><input data-k="size" type="text" value="${esc(x.size)}"></td><td><input data-k="weight" type="number" min="0" step="0.1" value="${esc(x.weight)}"></td><td><input data-k="cost" type="number" min="0" step="0.01" value="${esc(x.cost)}"></td><td><input data-k="sold" type="number" min="0" step="0.01" value="${esc(x.sold)}"></td><td data-calc="profit" class="money ${p<0?'negative':'positive'}">${money.format(p)}</td><td data-calc="margin" class="money ${m<0?'negative':'positive'}">${(m*100).toFixed(2)}%</td><td class="bulk-action"><button class="bulk-btn" type="button">Calculate</button></td><td class="actions"><button class="danger remove" title="Remove item">×</button></td></tr>`}).join(''):'<tr><td colspan="9" class="empty">No items match your search.</td></tr>';
- totals();$('#countPill').textContent=`${visible.length} of ${items.length} items`;}
-function totals(){const c=items.reduce((s,x)=>s+num(x.cost),0),sold=items.reduce((s,x)=>s+num(x.sold),0),p=sold-c,m=sold?p/sold:0;$('#totalCost').textContent=money.format(c);$('#totalSold').textContent=money.format(sold);$('#profit').textContent=money.format(p);$('#profit').className=p<0?'negative':'positive';$('#margin').textContent=(m*100).toFixed(2)+'%';$('#margin').className=m<0?'negative':'positive'}
-$('#tbody').addEventListener('input',e=>{
- const tr=e.target.closest('tr'),k=e.target.dataset.k;if(!tr||!k)return;
- const i=+tr.dataset.i;items[i][k]=['weight','cost','sold'].includes(k)?(e.target.value===''?'':num(e.target.value)):e.target.value;
- save();
- if(k==='cost'||k==='sold'){const p=num(items[i].sold)-num(items[i].cost),m=num(items[i].sold)?p/num(items[i].sold):0;const pc=tr.querySelector('[data-calc=profit]'),mc=tr.querySelector('[data-calc=margin]');pc.textContent=money.format(p);pc.className='money '+(p<0?'negative':'positive');mc.textContent=(m*100).toFixed(2)+'%';mc.className='money '+(m<0?'negative':'positive');totals();}
-});
-$('#tbody').addEventListener('click',e=>{if(e.target.classList.contains('bulk-btn')){openBulkCalculator(+e.target.closest('tr').dataset.i);return}if(!e.target.classList.contains('remove'))return;const i=+e.target.closest('tr').dataset.i;if(confirm('Remove this item?')){items.splice(i,1);save();render()}});
 
-let bulkRowIndex=null;
-const BULK_KEY='inventory-manager-bulk-v1';
-function loadBulkDefaults(){try{return JSON.parse(localStorage.getItem(BULK_KEY))||{}}catch{return {}}}
-function calculateBulkCost(){
- const bw=num($('#bulkWeight').value),bc=num($('#bulkCost').value),iw=num($('#itemWeight').value);
- const perLb=bw>0?bc/bw:0, itemCost=perLb*(iw/16);
- $('#pricePerLb').textContent=money.format(perLb);
- $('#calculatedItemCost').textContent=money.format(itemCost);
- $('#applyBulkBtn').disabled=!(bw>0&&bc>=0&&iw>0);
- return itemCost;
-}
-function openBulkCalculator(i){
- bulkRowIndex=i;const x=items[i],defaults=loadBulkDefaults();
- $('#bulkItemLabel').textContent=x.name?`Calculate cost for ${x.name}.`:'Calculate cost for this item.';
- $('#bulkWeight').value=defaults.bulkWeight??'';
- $('#bulkCost').value=defaults.bulkCost??'';
- $('#itemWeight').value=x.weight??'';
- calculateBulkCost();$('#bulkDialog').showModal();
- setTimeout(()=>{if(!$('#bulkWeight').value)$('#bulkWeight').focus();else if(!$('#bulkCost').value)$('#bulkCost').focus();else $('#itemWeight').focus()},0);
-}
-['bulkWeight','bulkCost','itemWeight'].forEach(id=>$('#'+id).addEventListener('input',calculateBulkCost));
-$('#cancelBulkBtn').onclick=()=>$('#bulkDialog').close();
-$('#applyBulkBtn').onclick=()=>{
- if(bulkRowIndex===null)return;
- const bw=num($('#bulkWeight').value),bc=num($('#bulkCost').value),iw=num($('#itemWeight').value),cost=calculateBulkCost();
- if(!(bw>0&&iw>0)){alert('Enter a bulk weight and item weight greater than zero.');return;}
- localStorage.setItem(BULK_KEY,JSON.stringify({bulkWeight:bw,bulkCost:bc}));
- items[bulkRowIndex].weight=iw;items[bulkRowIndex].cost=Number(cost.toFixed(2));save();$('#bulkDialog').close();render();
-};
-$('#bulkDialog').addEventListener('click',e=>{if(e.target===$('#bulkDialog'))$('#bulkDialog').close()});
+<dialog id="bulkDialog"><form method="dialog" class="dialog-card small-dialog" id="bulkForm"><header><div><p class="eyebrow">Cost Calculator</p><h2>Bulk Purchase</h2></div><button value="cancel" class="close-btn">×</button></header><div class="dialog-body"><p class="helper">Enter the full lot details and the individual item's weight.</p><div class="form-grid"><label>Total bulk weight (lb)<input id="bulkWeight" type="number" min="0" step="0.01" inputmode="decimal"></label><label>Total bulk cost ($)<input id="bulkCost" type="number" min="0" step="0.01" inputmode="decimal"></label><label class="full">Individual item weight (oz)<input id="bulkItemWeight" type="number" min="0" step="0.1" inputmode="decimal"></label></div><div class="calc-box"><div><span>Price per pound</span><strong id="bulkPerLb">$0.00</strong></div><div><span>Item cost</span><strong id="bulkItemCost">$0.00</strong></div></div></div><footer><button value="cancel">Cancel</button><button id="applyBulk" type="button" class="primary">Apply Cost</button></footer></form></dialog>
 
-$('#addBtn').onclick=()=>{items.unshift({name:'',size:'',weight:'',cost:'',sold:''});save();render();setTimeout(()=>$('#tbody input')?.focus(),0)};
-$('#search').addEventListener('input',render);$('#printBtn').onclick=()=>print();
-function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
-$('#jsonBtn').onclick=()=>download('inventory-backup.json',JSON.stringify(items,null,2),'application/json');
-$('#csvBtn').onclick=()=>{const head=['Item Name','Size','Weight (oz)','Cost','Sold','Profit','Profit Margin'];const lines=[head,...items.map(x=>{const p=num(x.sold)-num(x.cost),m=num(x.sold)?p/num(x.sold):0;return [x.name,x.size,x.weight,x.cost,x.sold,p,m]})].map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(','));download('inventory.csv',lines.join('\n'),'text/csv')};
-$('#importBtn').onclick=()=>$('#fileInput').click();$('#fileInput').onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!Array.isArray(x))throw Error();items=x;save();render()}catch{alert('That file is not a valid inventory backup.')}e.target.value=''};
-render();
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js'));
-}
-const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-if (isIOS && !isStandalone) document.getElementById('iosInstall').style.display = 'block';
-</script>
-</body></html>
+<dialog id="ioDialog"><div class="dialog-card small-dialog"><header><div><p class="eyebrow">Data Tools</p><h2 id="ioTitle">Import</h2></div><button class="close-btn" data-close="ioDialog">×</button></header><div class="dialog-body" id="ioBody"></div></div></dialog>
+<dialog id="backupDialog"><div class="dialog-card"><header><div><p class="eyebrow">Recovery</p><h2>Automatic Backups</h2></div><button class="close-btn" data-close="backupDialog">×</button></header><div class="dialog-body"><p class="helper">The app keeps up to 10 local snapshots. Restoring replaces the current inventory.</p><div id="backupList" class="backup-list"></div></div></div></dialog>
+<div id="toast" class="toast" role="status"></div>
+</body>
+</html>
