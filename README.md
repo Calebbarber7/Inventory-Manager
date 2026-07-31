@@ -46,3 +46,25 @@ Excel import/export uses the browser build of SheetJS. The script is loaded from
 - Added a Data button to the mobile navigation.
 - Restored visible CSV and Excel import/export choices on mobile.
 - Bumped the offline cache so installed PWAs receive the update.
+
+
+## Version 2.1 updates
+- Separate Inventory and Sold tabs. Entering a sold price automatically moves an item to Sold.
+- Sold tab displays the total number of sold items.
+- Separate Take Photo and Choose from Photos controls on iPhone.
+- Full JSON backups include compressed item photos. CSV and Excel exports do not include image data.
+
+
+## Full backup restore
+
+The **Data** menu now includes **Import full backup**. Select a JSON file created by **Export full backup** or **Share Backup** to restore the complete app state on another device, including inventory, sold items, photos, settings, and saved bulk-calculator defaults.
+
+Restoring a full backup replaces the current app data after confirmation. The app creates a local recovery snapshot first.
+
+
+## Version 2.3 backup behavior
+
+- **Automatic local snapshot:** the app keeps one rolling recovery snapshot in IndexedDB. New snapshots overwrite the previous local snapshot.
+- **Save Latest Backup to iCloud:** creates a complete file named `Inventory_Latest_Backup.json`, including photos. On iPhone, save it to the same iCloud Drive folder and choose **Replace** when iOS prompts.
+- The PWA cannot silently overwrite an iCloud Drive file; iOS requires confirmation through the Share/Save interface.
+- **Import Full Backup** restores this file on another device.
